@@ -18,13 +18,12 @@ app.post("/subscribe", (req, res) => {
   if (!email) return res.status(400).send("No email");
 
   subscribers.push({
-    email,
-    crystal: crystal === "on" || crystal === true,
-    cookie: cookie === "on" || cookie === true,
-    all: false
-  });
-
-  console.log("New subscriber:", subscribers[ subscribers.length - 1 ]);
+  email: "your@email.com",
+  crystal: true,
+  cookie: true,
+  all: false
+});
+console.log("Added test subscriber!");
   res.send({ success: true });
 });
 
