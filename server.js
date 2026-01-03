@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
 import { Resend } from "resend";
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());              // parses JSON bodies
+app.use(express.urlencoded({ extended: true })); // parses form data (Webflow)
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
