@@ -14,7 +14,6 @@ let submissions = [];
 
 // Subscribe
 app.post("/subscribe", (req, res) => {
-  console.log(req.body);  // <-- ADD THIS
   const { email, crystal, cookie } = req.body;
   if (!email) return res.status(400).send("No email");
 
@@ -25,8 +24,10 @@ app.post("/subscribe", (req, res) => {
     all: false
   });
 
+  console.log("New subscriber:", subscribers[ subscribers.length - 1 ]);
   res.send({ success: true });
 });
+
 
 
 // Admin send
