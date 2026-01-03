@@ -14,18 +14,20 @@ let submissions = [];
 
 // Subscribe
 app.post("/subscribe", (req, res) => {
-  const { email, crystal, cookie, all } = req.body;
+  console.log(req.body);  // <-- ADD THIS
+  const { email, crystal, cookie } = req.body;
   if (!email) return res.status(400).send("No email");
 
   subscribers.push({
-  email,
-  crystal: crystal === "on" || crystal === true,
-  cookie: cookie === "on" || cookie === true,
-  all: false
-});
+    email,
+    crystal: crystal === "on" || crystal === true,
+    cookie: cookie === "on" || cookie === true,
+    all: false
+  });
 
   res.send({ success: true });
 });
+
 
 // Admin send
 app.post("/admin/send", async (req, res) => {
