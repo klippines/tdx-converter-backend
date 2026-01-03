@@ -16,7 +16,7 @@ const subscribers = [];
 
 // Add this near the top, below `const subscribers = [];`
 subscribers.push({
-  email: "your@email.com",
+  email: "littlecreeper1200@gmail.com",
   crystal: true,
   cookie: true,
   all: false
