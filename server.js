@@ -6,18 +6,25 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// MIDDLEWARE
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// IN-MEMORY SUBSCRIBERS
+// In-memory storage
 const subscribers = [];
+const submissions = []; // For community screenshots
 
-// Add this near the top, below `const subscribers = [];`;
+// --- TEST SUBSCRIBER (REMOVE LATER) ---
+subscribers.push({
+  email: "your@email.com",
+  crystal: true,
+  cookie: true,
+  all: false
+});
+console.log("Test subscriber added!");
 
-
-// SUBSCRIBE ENDPOINT (Webflow-compatible)
+// --- SUBSCRIBE ENDPOINT ---
 app.post("/subscribe", (req, res) => {
   const { email, crystal, cookie } = req.body;
   if (!email) return res.status(400).send("No email");
@@ -29,11 +36,11 @@ app.post("/subscribe", (req, res) => {
     all: false
   });
 
-  console.log("New subscriber:", subscribers[ subscribers.length - 1 ]);
+  console.log("New subscriber:", subscribers[subscribers.length - 1]);
   res.send({ success: true });
 });
 
-// ADMIN SEND EMAIL
+// --- ADMIN SEND EMAIL ---
 app.post("/admin/send", async (req, res) => {
   const { type, gold, crystalAmount, stock } = req.body;
   if (!type) return res.status(400).send("Missing type");
@@ -50,7 +57,9 @@ app.post("/admin/send", async (req, res) => {
         from: "TDX Alerts <noreply@example.com>",
         to: sub.email,
         subject: `TDX ${type.toUpperCase()} Conversion!`,
-        html: `<p>Gold: ${gold}</p><p>Crystals: ${crystalAmount}</p><p>Stock: ${stock}</p>`
+        html: `<p>Gold: ${gold}</p>
+               <p>Crystals: ${crystalAmount}</p>
+               <p>Stock: ${stock}</p>`
       });
       sentCount++;
     } catch (err) {
@@ -61,4 +70,36 @@ app.post("/admin/send", async (req, res) => {
   res.send({ sent: sentCount });
 });
 
+// --- COMMUNITY SUBMISSIONS ---
+app.post("/submit", (req, res) => {
+  const { user, type, imageUrl } = req.body;
+  if (!user || !type || !imageUrl) return res.status(400).send("Missing data");
+
+  const submission = {
+    user,
+    type,
+    imageUrl,
+    verified: false
+  };
+
+  submissions.push(submission);
+  console.log("New submission:", submission);
+  res.send({ success: true });
+});
+
+// --- ADMIN VERIFY SUBMISSION ---
+app.post("/admin/verify", (req, res) => {
+  const { index, verified } = req.body;
+  if (submissions[index] == null) return res.status(404).send("Submission not found");
+
+  submissions[index].verified = verified;
+  res.send({ success: true, submission: submissions[index] });
+});
+
+// --- GET SUBMISSIONS (for Webflow display) ---
+app.get("/submissions", (req, res) => {
+  res.send(submissions);
+});
+
+// --- START SERVER ---
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
