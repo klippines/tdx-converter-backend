@@ -14,14 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 // IN-MEMORY SUBSCRIBERS
 const subscribers = [];
 
-// Add this near the top, below `const subscribers = [];`
-subscribers.push({
-  email: "littlecreeper1200@gmail.com",
-  crystal: true,
-  cookie: true,
-  all: false
-});
-console.log("Test subscriber added!");
+// Add this near the top, below `const subscribers = [];`;
 
 
 // SUBSCRIBE ENDPOINT (Webflow-compatible)
